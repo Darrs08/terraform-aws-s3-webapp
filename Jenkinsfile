@@ -1,4 +1,3 @@
-@Library('terraformLibrary') _
 pipeline {
    agent any
    tools {
