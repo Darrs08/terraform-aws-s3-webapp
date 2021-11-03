@@ -5,6 +5,11 @@ pipeline {
       terraform 'terraform1.0.9'
    }
    parameters {
+       string(
+         name: 'bucketName', 
+         defaultValue: 'client', 
+         description: 'use lowercase only'
+      )
       booleanParam(
          name: 'destroy',
          defaultValue: false,
@@ -23,7 +28,7 @@ pipeline {
          }        
          steps {
             sh 'terraform init -migrate-state -input=false'
-            sh "terraform plan -input=false -out tfplan -var 'prefix=tetris' "
+            sh "terraform plan -input=false -out tfplan -var 'prefix=tetris' 'name=${bucketName}'"
             sh 'terraform show -no-color tfplan > tfplan.txt'
          }
       }
