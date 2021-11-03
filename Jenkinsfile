@@ -8,7 +8,7 @@ pipeline {
        string(
          name: 'bucketName', 
          defaultValue: 'client', 
-         description: 'use lowercase only'
+         description: 'Bucket Name for S3 bucket (use lowercase only)'
       )
       booleanParam(
          name: 'destroy',
