@@ -37,7 +37,7 @@ pipeline {
             sh 'terraform show -no-color tfplan > tfplan.txt'
          }
       }
-      stage ('Terraform Plan') {
+      stage ('Terraform Plan Approval') {
          when {
             equals expected: false, actual: params.destroy         
             equals expected: false, actual: params.autoApprove
