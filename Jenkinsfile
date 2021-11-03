@@ -18,6 +18,9 @@ pipeline {
    }
    stages {
       stage ('Terraform Init') {
+         when {
+            equals expected: false, actual: params.destroy
+         }        
          steps {
             sh 'terraform init -migrate-state -input=false'
             sh "terraform plan -input=false -out tfplan "
@@ -25,6 +28,9 @@ pipeline {
          }
       }
       stage ('Terraform Plan') {
+         when {
+            equals expected: false, actual: params.destroy
+         }  
          steps {
             script {
                def plan = readFile 'tfplan.txt'
@@ -34,6 +40,9 @@ pipeline {
          }
       }
       stage ('Terraform Apply') {
+         when {
+            equals expected: false, actual: params.destroy
+         }  
          steps {
             sh "terraform apply -input=false tfplan"
          }
