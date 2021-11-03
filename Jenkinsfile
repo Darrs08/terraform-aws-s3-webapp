@@ -39,9 +39,7 @@ pipeline {
       }
       stage ('Terraform Plan') {
          when {
-            equals expected: false, actual: params.destroy
-         }
-          when {
+            equals expected: false, actual: params.destroy         
             equals expected: false, actual: params.autoApprove
          }
          steps {
