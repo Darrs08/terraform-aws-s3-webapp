@@ -18,7 +18,7 @@ pipeline {
       booleanParam(
          name: 'autoApprove',
          defaultValue: false,
-         description: 'Destroy Terraform build?'
+         description: 'Skip the plan aprroval stage'
       )
    }
    environment {
