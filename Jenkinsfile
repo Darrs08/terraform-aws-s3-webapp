@@ -26,7 +26,7 @@ pipeline {
             sh 'terraform show -no-color tfplan > tfplan.txt'
          }
       }
-      stage ('Terraform Apply') {
+      stage ('Terraform Plan') {
          steps {
             def plan = readFile 'tfplan.txt'
             input message: "Do you want to apply the plan?",
@@ -38,7 +38,7 @@ pipeline {
             sh "terraform apply -input=false tfplan"
          }
       }
-      stage('Destroy') {
+      stage('Terraform Destroy') {
          when {
             equals expected: true, actual: params.destroy
          }        
