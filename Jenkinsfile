@@ -15,6 +15,11 @@ pipeline {
          defaultValue: false,
          description: 'Destroy Terraform build?'
       )
+      booleanParam(
+         name: 'autoApprove',
+         defaultValue: false,
+         description: 'Destroy Terraform build?'
+      )
    }
    environment {
       AWS_ACCESS_KEY_ID     = credentials('AWS_ACCESS_KEY_ID')
@@ -35,7 +40,10 @@ pipeline {
       stage ('Terraform Plan') {
          when {
             equals expected: false, actual: params.destroy
-         }  
+         }
+          when {
+            equals expected: false, actual: params.autoApprove
+         }
          steps {
             script {
                def plan = readFile 'tfplan.txt'
