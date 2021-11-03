@@ -23,7 +23,7 @@ pipeline {
          }        
          steps {
             sh 'terraform init -migrate-state -input=false'
-            sh "terraform plan -input=false -out tfplan "
+            sh "terraform plan -input=false -out tfplan -var 'prefix=tetris' "
             sh 'terraform show -no-color tfplan > tfplan.txt'
          }
       }
@@ -56,4 +56,9 @@ pipeline {
          }
       }
    }
+   post {
+        always {
+            archiveArtifacts artifacts: 'tfplan.txt'
+        }
+    }
 }
