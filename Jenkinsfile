@@ -28,7 +28,7 @@ pipeline {
          }        
          steps {
             sh 'terraform init -migrate-state -input=false'
-            sh "terraform plan -input=false -out tfplan -var 'prefix=tetris' -var 'name=${bucketName}'"
+            sh "terraform plan -input=false -out tfplan -var 'prefix=tetris' -var 'name=${bucketName}' -var 'region=${awsRegion}"
             sh 'terraform show -no-color tfplan > tfplan.txt'
          }
       }
