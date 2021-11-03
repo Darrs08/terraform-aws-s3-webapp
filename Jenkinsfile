@@ -4,6 +4,13 @@ pipeline {
    tools {
       terraform 'terraform1.0.9'
    }
+   parameters {
+      booleanParam(
+         name: 'destroy',
+         defaultValue: false,
+         description: 'Destroy Terraform build?'
+      )
+   }
    environment {
       AWS_ACCESS_KEY_ID     = credentials('AWS_ACCESS_KEY_ID')
       AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
@@ -12,72 +19,31 @@ pipeline {
       userCred = 'cloud_user'
    }
    stages {
-      stage('checkout') {
+      stage ('Terraform Init') {
          steps {
-            script{  
-               checkoutGit()
-            }
+            sh 'terraform init -migrate-state -input=false'
+            sh "terraform plan -input=false -out tfplan "
+            sh 'terraform show -no-color tfplan > tfplan.txt'
          }
       }
-      stage('Create S3 bucket for backend') {
-         when {
-            equals expected: true, actual: params.s3Bucket
-         }
+      stage ('Terraform Apply') {
          steps {
-            createBackendBucket()
+            def plan = readFile 'tfplan.txt'
+            input message: "Do you want to apply the plan?",
+            parameters: [text(name: 'Plan', description: 'Please review the plan', defaultValue: plan)]
          }
       }
-      stage('Plan') {
-         when {
-            not {
-               equals expected: true, actual: params.destroy
-            }
-         }   
+      stage ('Terraform Apply') {
          steps {
-            terraformPlan()
+            sh "terraform apply -input=false tfplan"
          }
       }
-      stage('Approval') {
-         when {
-            not {
-               equals expected: true, actual: params.autoApprove
-            }
-            not {
-               equals expected: true, actual: params.destroy
-            }
-         }
-         steps {
-            script {
-               terraformApproval()
-            }
-         }
-      }
-      stage('Apply') {
-         when {
-            not {
-               equals expected: true, actual: params.destroy
-            }
-         }           
-         steps {
-            terraformApply()
-         }
-      }
-      stage('Output') {
-         when {
-            not {
-               equals expected: true, actual: params.destroy
-            }
-         }           
-         steps {
-            terraformOutput()
-         }
-      }             
       stage('Destroy') {
          when {
             equals expected: true, actual: params.destroy
          }        
          steps {
-            terraformDestroy()
+            sh "terraform destroy --auto-approve"
          }
       }
    }
