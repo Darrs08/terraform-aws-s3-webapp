@@ -20,6 +20,7 @@ pipeline {
       AWS_ACCESS_KEY_ID     = credentials('AWS_ACCESS_KEY_ID')
       AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
       awsRegion = 'us-east-1'
+      gameName = 'archer'
    }
    stages {
       stage ('Terraform Init') {
@@ -28,7 +29,7 @@ pipeline {
          }        
          steps {
             sh 'terraform init -migrate-state -input=false'
-            sh "terraform plan -input=false -out tfplan -var 'prefix=tetris' -var 'name=${bucketName}' -var 'region=${awsRegion}'"
+            sh "terraform plan -input=false -out tfplan -var 'prefix=${gameName}' -var 'name=${bucketName}' -var 'region=${awsRegion}'"
             sh 'terraform show -no-color tfplan > tfplan.txt'
          }
       }
