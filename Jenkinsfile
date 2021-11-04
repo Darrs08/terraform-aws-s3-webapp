@@ -4,20 +4,16 @@ pipeline {
       terraform 'terraform1.0.9'
    }
    parameters {
-       string(
-         name: 'bucketName', 
-         defaultValue: 'client', 
-         description: 'Bucket Name for S3 bucket (use lowercase only)'
+      string(name: 'bucketName', defaultValue: 'client', description: 'Bucket Name for S3 bucket (use lowercase only)')
+      booleanParam(
+         name: 'autoApprove',
+         defaultValue: false,
+         description: 'Skip the plan aprroval stage'
       )
       booleanParam(
          name: 'destroy',
          defaultValue: false,
          description: 'Destroy Terraform build?'
-      )
-      booleanParam(
-         name: 'autoApprove',
-         defaultValue: false,
-         description: 'Skip the plan aprroval stage'
       )
    }
    environment {
